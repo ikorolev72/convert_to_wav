@@ -18,10 +18,34 @@
       }
       
       if(empty($errors)==true){
-         move_uploaded_file($file_tmp,"upload_files/".$file_name);
-         echo "Success";
-      }else{
-         print_r($errors);
+		 $output_file="upload_files/".$file_name;
+		 $converted_file="converted_files/".pathinfo ( $output_file , PATHINFO_FILENAME ).".wav";
+		 $converted_file_url="/$converted_file";
+		 // $converted_file_url="http://localhost:8080/$converted_file";
+		 
+         move_uploaded_file($file_tmp, $output_file );
+         echo "File uploaded success<br>";
+		 
+		 $output=array();
+		 $return_var=1;
+		 $command="/usr/bin/sox $output_file -b 16 $converted_file recital.wav channels 1 rate 8k";
+		 
+		 exec ( $command, $output, $return_var );
+		 if( $return_var!=0 ) {
+			echo "File converted: <a href='$converted_file_url'> $converted_file_url </a><br>";				
+		 } else {
+			echo "File converting error:<br>";				
+			foreach($output as $value)
+			{
+			echo "$value<br>";
+			}			 			 
+		 }
+		 
+      } else{
+			foreach($errors as $value)
+			{
+			echo "<font color=red>$value</font><br>";
+			}			 			 
       }
    }
 ?>
