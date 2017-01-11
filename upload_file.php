@@ -1,8 +1,9 @@
 <?php
-	// require libsox-fmt-mp3 lib for support mp3 files
 	$upload_dir="/home/osboxes/convert_to_wav/upload_files";
 	$convert_dir="/home/osboxes/convert_to_wav/converted_files";
 	$convert_base_url="/converted_files"; // or absolute http://localhost:8080/converted_files
+	$converting_tool="/tmp/bin/converiting2wav.sh" ;
+	$max_filesize = 2097152;
 	
    if(isset($_FILES['upload_file'])){
       $errors= array();
@@ -20,9 +21,14 @@
          $errors[]="extension not allowed, please choose an audio file.";
       }
       
-      if($file_size > 2097152){
-         $errors[]='File size must be excately 2 MB';
+      if($file_size > $max_filesize ){
+         $errors[]="File size must be excately $max_filesize";
       }
+	 $dt=time();
+	 if ( mkdir ( "$convert_dir/$dt", 0755, true ) ) {
+	 } else {
+         $errors[]="Cannot create dir $convert_dir/$dt";			
+	 } 
       
       if(empty($errors)==true){
         echo "File uploaded success<br>";
@@ -35,15 +41,15 @@
 		// echo $path_parts['basename'], "\n";
 		// echo $path_parts['extension'], "\n";
 		// echo $path_parts['filename'], "\n"; 
-		 		 
-		 $converted_file="$convert_dir/".$path_parts['filename'].".wav";
-		 $converted_file_url="$convert_base_url/".$path_parts['filename'].".wav";
+		 
+		 $converted_file="$convert_dir/$dt/".$path_parts['filename'].".wav";
+		 $converted_file_url="$convert_base_url/$dt/".$path_parts['filename'].".wav";
 		 
 
 		 $output=array();
 		 $return_var=1; 
 		 
-		 $command="/tmp/bin/converiting2wav.sh $output_file  $converted_file 2>&1";
+		 $command="$converting_tool $output_file  $converted_file 2>&1";
 		 echo "$command<br>";
 		 
 		 exec ( $command, $output, $return_var );
