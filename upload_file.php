@@ -1,8 +1,13 @@
 <?php
-	$upload_dir="/home/osboxes/convert_to_wav/upload_files";
-	$convert_dir="/home/osboxes/convert_to_wav/converted_files";
-	$convert_base_url="/converted_files"; // or absolute http://localhost:8080/converted_files
-	$converting_tool="/tmp/bin/converiting2wav.sh" ;
+	$basedir=dirname(__FILE__);
+	$upload_dir="$basedir/upload_files";
+	$convert_dir="$basedir/converted_files";
+	$converting_tool="$basedir/converiting2wav.sh" ;
+	$convert_base_url="/convert_to_wav/converted_files"; // or absolute http://localhost:8080/convert_to_wav/converted_files
+//	$upload_dir="/var/www/html/tools.unixpin.com/convert_to_wav/upload_files";
+//	$convert_dir="/var/www/html/tools.unixpin.com/convert_to_wav/converted_files";
+//	$convert_base_url="/convert_to_wav/converted_files"; // or absolute http://localhost:8080/converted_files
+//	$converting_tool="/tmp/bin/converiting2wav.sh" ;
 	$max_filesize = 2097152;
 	
    if(isset($_FILES['upload_file'])){
@@ -50,7 +55,7 @@
 		 $return_var=1; 
 		 
 		 $command="$converting_tool $output_file  $converted_file 2>&1";
-		 echo "$command<br>";
+		 // echo "$command<br>";
 		 
 		 exec ( $command, $output, $return_var );
 		 if( $return_var==0 ) {
